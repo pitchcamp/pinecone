@@ -1,0 +1,28 @@
+version: '3'
+services:
+    gptchat:
+        image: jas313/gpt-chatbot
+        restart: always
+        environment:
+            - PORT=5000 # This will change the port the express server uses.
+            - OPEN_AI_KEY=your-openai-key
+            - PINECONE_API=your-pinecone-key
+            - PINECONE_URL=https://indexname-2342342a.svc.us-east1-gcp.pinecone.io # Insert your index location here
+            - MONGODB=mongodb://mongo:27017/memories # call your collection whatever you want.
+        ports:
+            - 5055:5000
+        depends_on:
+            - mongo
+        networks:
+            - chat_network
+    mongo:
+        image: mongo
+        restart: always
+        volumes:
+            - ./mongo_data/db:/data/db # Set location for the db on your local system
+        networks:
+            - chat_network
+        ports:
+            - 27017:27017
+networks:
+    chat_network:
